@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.3] - 2025-11-19
+
+### Fixed
+- Corrected Dockerfile EXPOSE port from 3000 to 3456 to match server configuration
+- Fixed Express 5 error handler signature (added missing `next` parameter)
+
+## [2.1.2] - 2025-11-19
+
+### Fixed
+- Express 5 compatibility: Added `next` parameter to error handler
+
 ## [2.1.1] - 2025-11-19
 
 ### Fixed

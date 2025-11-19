@@ -16,6 +16,6 @@ RUN npm install
 
 COPY --chown=node:node . .
 
-EXPOSE 3000
+EXPOSE 3456
 
 CMD [ "node",  "server.js" ]
