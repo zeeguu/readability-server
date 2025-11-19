@@ -22,15 +22,23 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: 0
 
       - name: Check if package.json version changed
         id: check
         run: |
-          if git diff HEAD^ HEAD -- package.json | grep -q '"version"'; then
+          # Get the before and after commits from the push event
+          BEFORE="${{ github.event.before }}"
+          AFTER="${{ github.sha }}"
+
+          echo "Comparing $BEFORE...$AFTER"
+
+          if git diff $BEFORE $AFTER -- package.json | grep -q '"version"'; then
             echo "changed=true" >> $GITHUB_OUTPUT
+            echo "Version changed detected"
           else
             echo "changed=false" >> $GITHUB_OUTPUT
+            echo "No version change detected"
           fi
 
       - name: Get version from package.json
