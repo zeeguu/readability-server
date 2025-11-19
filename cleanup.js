@@ -10,8 +10,15 @@ export async function basic_readability_cleanup(url) {
     return (await get_readability_article(url)).content
 }
 
-export async function advanced_readability_cleanup(url) {
-    let article = await Article(url)
+export async function advanced_readability_cleanup(url, htmlContent = null) {
+    let article;
+    if (htmlContent) {
+        // Parse provided HTML content
+        article = await get_readability_article(url, htmlContent);
+    } else {
+        // Fetch HTML from URL
+        article = await Article(url);
+    }
 
     let cleanedContent = generalClean(article.content);
 
@@ -26,11 +33,17 @@ export async function advanced_readability_cleanup(url) {
 }
 
 
-export async function get_readability_article(url) {
+export async function get_readability_article(url, htmlContent = null) {
 
-    // Fetch the HTML content of the provided URL
-    const response = await fetch(url);
-    const html = await response.text();
+    let html;
+    if (htmlContent) {
+        // Use provided HTML content
+        html = htmlContent;
+    } else {
+        // Fetch the HTML content of the provided URL
+        const response = await fetch(url);
+        html = await response.text();
+    }
 
     // Create a DOM from the HTML
     const { window } = new JSDOM(html);

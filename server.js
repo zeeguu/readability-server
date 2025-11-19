@@ -1,10 +1,14 @@
 import express from "express";
-import { advanced_readability_cleanup } from "./cleanup.js";
+import { advanced_readability_cleanup, get_readability_article } from "./cleanup.js";
 import { HTML2Text } from "./convert_htm_to_plaintext.js";
-import * as packageJson from "./package.json" assert { type: "json" };
+import packageJson from "./package.json" with { type: "json" };
 import * as Sentry from "@sentry/node";
 
 const app = express();
+
+// Enable JSON body parsing for POST requests
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Sentry prefix: START
 Sentry.init({
@@ -32,8 +36,42 @@ app.get("/cleanup", async (req, res) => {
 
   try {
     const html = await advanced_readability_cleanup(url);
-    // Send the cleaned up content as the response
-    res.send({ html: html, text: HTML2Text(html) });
+    const readabilityResult = await get_readability_article(url);
+    // Send the cleaned up content as the response with metadata
+    res.send({
+      html: html,
+      text: HTML2Text(html),
+      title: readabilityResult.title,
+      excerpt: readabilityResult.excerpt,
+      byline: readabilityResult.byline,
+      siteName: readabilityResult.siteName
+    });
+  } catch (e) {
+    res.status(500).send(e.message);
+  }
+});
+
+// POST endpoint that accepts HTML content directly
+app.post("/cleanup", async (req, res) => {
+  const { url, htmlContent } = req.body;
+  console.log(`POST /cleanup - url: ${url}, htmlContent length: ${htmlContent?.length || 0}`);
+
+  if (!htmlContent) {
+    return res.status(400).send("htmlContent is required");
+  }
+
+  try {
+    const html = await advanced_readability_cleanup(url, htmlContent);
+    const readabilityResult = await get_readability_article(url, htmlContent);
+    // Send the cleaned up content as the response with metadata
+    res.send({
+      html: html,
+      text: HTML2Text(html),
+      title: readabilityResult.title,
+      excerpt: readabilityResult.excerpt,
+      byline: readabilityResult.byline,
+      siteName: readabilityResult.siteName
+    });
   } catch (e) {
     res.status(500).send(e.message);
   }
@@ -64,6 +102,6 @@ app.use(function onError(err, req, res) {
 const port = 3456;
 app.listen(port, () => {
   console.log(
-    `Server (${packageJson.default.version}) is running on http://localhost:${port}`,
+    `Server (${packageJson.version}) is running on http://localhost:${port}`,
   );
 });
