@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - POST `/cleanup` endpoint that accepts HTML content directly
 - Enhanced GET endpoint to return additional metadata (title, byline, excerpt, siteName)
+- CHANGELOG.md following Keep a Changelog format
+- Automated Docker Hub publishing workflow (triggers on package.json version change)
 
 ### Changed
 - Upgraded Mozilla Readability from 0.4.4 to 0.6.0
