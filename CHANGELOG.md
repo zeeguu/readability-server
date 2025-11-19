@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.1] - 2025-11-19
+
+### Fixed
+- Workflow now correctly detects version changes across multiple commits in a push
+
 ## [2.1.0] - 2025-11-19
 
 ### Added
