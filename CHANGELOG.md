@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.4] - 2025-11-24
+
+### Added
+- Detailed timestamped logging for all cleanup requests showing progress and duration
+- Logging for each step of the cleanup pipeline (readability cleanup, article extraction)
+
+### Fixed
+- Suppressed noisy "Could not parse CSS stylesheet" warnings from JSDOM
+
 ## [2.1.3] - 2025-11-19
 
 ### Fixed

@@ -77,3 +77,21 @@ jobs:
             org.opencontainers.image.version=${{ needs.check_version.outputs.version }}
             org.opencontainers.image.created=${{ github.event.head_commit.timestamp }}
             org.opencontainers.image.revision=${{ github.sha }}
+
+  deploy_to_server:
+    name: Deploy to production server
+    runs-on: ubuntu-latest
+    needs: [check_version, push_to_registry]
+    if: needs.check_version.outputs.version_changed == 'true'
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          script: |
+            cd /home/zeeguu/ops/running/api
+            docker compose pull readability_server
+            docker compose up -d readability_server
+            echo "Deployed readability_server version ${{ needs.check_version.outputs.version }}"
