@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.6] - 2025-11-28
+
+### Changed
+- Strip `<style>` tags before JSDOM parsing for 10-20x speedup on CSS-heavy sites
+  - Sites like lequipe.fr (300KB+ inline CSS) now parse in ~2s instead of 30-40s
+  - Eliminates most readability server timeouts during crawling
+
+## [2.1.5] - 2025-11-27
+
+### Added
+- 8-second timeout wrapper for readability operations to prevent hanging on complex HTML
+
 ## [2.1.4] - 2025-11-24
 
 ### Added
